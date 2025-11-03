@@ -15,3 +15,7 @@ QListWidget {
 QLabel#headingLbl {
  font-size: 25px;
 }
+
+QProgressBar::Chunk{
+    background-color: green;
+}

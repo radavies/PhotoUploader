@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog
 
 
-class AppWindow(QWidget):
+class StartWindow(QWidget):
     def __init__(self, process_folder_event):
         super().__init__()
 
@@ -17,9 +17,9 @@ class AppWindow(QWidget):
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
 
-        new_game_button = QPushButton("Select Folder To Upload")
-        new_game_button.clicked.connect(self._open_folder_picker)
-        layout.addWidget(new_game_button)
+        select_btn = QPushButton("Select Folder To Upload")
+        select_btn.clicked.connect(self._open_folder_picker)
+        layout.addWidget(select_btn)
 
     def _open_folder_picker(self):
         self.process_folder_event(QFileDialog.getExistingDirectory())

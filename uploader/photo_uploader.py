@@ -1,17 +1,25 @@
 import pathlib
 import sys
 from pathlib import Path
+
+from PyQt6 import QtCore
+
 from misc import Misc
 from iptcinfo3 import IPTCInfo
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QIcon
-from interface.app_window import AppWindow
+from interface.start_window import StartWindow
+from interface.process_window import ProcessWindow
+from uploader.upload_task import UploadTask
 
 class PhotoUploader:
 
     def __init__(self):
         self.uploads = {}
         self.app_window = None
+        self.process_window = None
+        self.upload_thread = None
+        self.upload_task = None
 
     def start_app(self):
         app = QApplication(sys.argv)
@@ -24,7 +32,7 @@ class PhotoUploader:
         css_file = folder / Misc.CSSFileName.value
         app.setStyleSheet(open(css_file).read())
 
-        self.app_window = AppWindow(self.process_folder_event)
+        self.app_window = StartWindow(self.process_folder_event)
         self.app_window.show()
 
         sys.exit(app.exec())
@@ -38,7 +46,8 @@ class PhotoUploader:
             if file.suffix.lower() == ".jpg" or file.suffix.lower() == ".jpeg":
                 self.read_metadata(file)
 
-        print("done")
+        self.process_window = ProcessWindow(self.uploads, self.do_upload)
+        self.process_window.show()
 
     def read_metadata(self, file):
         info = IPTCInfo(file)
@@ -50,3 +59,24 @@ class PhotoUploader:
                 self.uploads[file].append(person)
             else:
                 self.uploads[file] = [person]
+
+    def do_upload(self):
+
+        self.upload_thread = QtCore.QThread()
+
+        self.upload_task = UploadTask(self.uploads)
+        self.upload_task.moveToThread(self.upload_thread)
+
+        self.upload_thread.started.connect(self.upload_task.run)
+        self.upload_task.finished.connect(self.upload_thread.quit)
+        self.upload_thread.finished.connect(self.after_upload)
+
+        self.upload_task.upload_signal.connect(self.update_progress)
+
+        self.upload_thread.start()
+
+    def update_progress(self):
+        self.process_window.update_progress()
+
+    def after_upload(self):
+        self.process_window.close()
