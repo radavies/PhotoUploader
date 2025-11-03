@@ -1,0 +1,26 @@
+from misc import Misc
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog
+
+
+class AppWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle(Misc.ProgName.value)
+
+        self.setFixedSize(500, 350)
+
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.setLayout(layout)
+
+        new_game_button = QPushButton("Select Folder To Upload")
+        new_game_button.clicked.connect(self._open_folder_picker)
+
+        layout.addWidget(new_game_button)
+
+    def _open_folder_picker(self):
+        print("opening folder picker")
+
+        folderName = QFileDialog.getExistingDirectory()
+        print(folderName)
