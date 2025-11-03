@@ -1,44 +1,53 @@
+import pathlib
 import sys
 from pathlib import Path
 from misc import Misc
 from iptcinfo3 import IPTCInfo
-from PyQt6 import QtCore
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QIcon
 from interface.app_window import AppWindow
+from interface.test_window import TestWindow
 
 class PhotoUploader:
 
     def __init__(self):
-        self._uploads = []
+        self.uploads = []
+        self.upload_app_window = None
 
     def start_app(self):
         app = QApplication(sys.argv)
         app.setApplicationName(Misc.ProgName.value)
 
-        folder = Path(Misc.DataFolderPath.value)
-        icon_file = folder / Misc.IconFileName.value
-        app.setWindowIcon(QIcon(str(icon_file)))
+        #folder = Path(Misc.DataFolderPath.value)
+        #icon_file = folder / Misc.IconFileName.value
+        #app.setWindowIcon(QIcon(str(icon_file)))
 
-        css_file = folder / Misc.CSSFileName.value
-        app.setStyleSheet(open(css_file).read())
+        #css_file = folder / Misc.CSSFileName.value
+        #app.setStyleSheet(open(css_file).read())
 
-        window = AppWindow()
-        window.show()
+        #self.app_window = AppWindow(self.process_folder_event)
+        #self.app_window.show()
+
+        self.upload_app_window = TestWindow()
+        self.upload_app_window.show()
 
         sys.exit(app.exec())
 
-    def start_uploads(self, input_folder):
-        self._test_reading()
-        return
 
-
-    def _test_reading(self):
-        info = IPTCInfo('images/Motherwell_CupSemi_Press_30Oct25_012.jpg')
-
-        people = info['headline'].decode("utf-8").split(',')
-
-        for person in people:
-            print(person.strip())
-
-        return
+    # def process_folder_event(self, folder):
+    #     self.app_window.close()
+    #
+    #     files = pathlib.Path(folder).iterdir()
+    #
+    #     for file in files:
+    #         print(file)
+    #         if file.suffix.lower() == ".jpg" or file.suffix.lower() == ".jpeg":
+    #             self.read_metadata(file)
+    #
+    # def read_metadata(self, file):
+    #     info = IPTCInfo(file)
+    #
+    #     people = info['headline'].decode("utf-8").split(',')
+    #
+    #     for person in people:
+    #         print(person.strip())

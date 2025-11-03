@@ -1,4 +1,4 @@
 IPTCInfo3==2.2.0
-PyQt6==6.2.2
-PyQt6-Qt6==6.2.2
-PyQt6-sip==13.2.0
+pyqt6-sip==13.10.2
+PyQt6==6.9.1
+pyQt6-Qt6==6.9.2

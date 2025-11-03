@@ -4,8 +4,11 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QFileDial
 
 
 class AppWindow(QWidget):
-    def __init__(self):
+    def __init__(self, process_folder_event):
         super().__init__()
+
+        self.process_folder_event = process_folder_event
+
         self.setWindowTitle(Misc.ProgName.value)
 
         self.setFixedSize(500, 350)
@@ -16,11 +19,7 @@ class AppWindow(QWidget):
 
         new_game_button = QPushButton("Select Folder To Upload")
         new_game_button.clicked.connect(self._open_folder_picker)
-
         layout.addWidget(new_game_button)
 
     def _open_folder_picker(self):
-        print("opening folder picker")
-
-        folderName = QFileDialog.getExistingDirectory()
-        print(folderName)
+        self.process_folder_event(QFileDialog.getExistingDirectory())
