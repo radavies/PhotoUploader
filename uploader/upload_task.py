@@ -1,5 +1,4 @@
 from PyQt6.QtCore import QObject, pyqtSignal
-import time
 
 class UploadTask(QObject):
 
@@ -26,7 +25,7 @@ class UploadTask(QObject):
 
             for file in self.uploads.keys():
                 for person in self.uploads[file]:
-                    upload_result = self.dropbox_helper.upload_file(file)
+                    upload_result = self.dropbox_helper.upload_file(file, person)
                     self.upload_message_event(upload_result['message'])
 
                     if not upload_result['status']:

@@ -1,5 +1,6 @@
 import pathlib
 import sys
+import time
 from pathlib import Path
 
 from PyQt6 import QtCore
@@ -59,7 +60,7 @@ class PhotoUploader:
 
         for person in people:
             if file in self.uploads.keys():
-                self.uploads[file].append(person)
+                self.uploads[file].append(person.strip())
             else:
                 self.uploads[file] = [person]
 
@@ -86,6 +87,7 @@ class PhotoUploader:
 
     def after_upload(self):
         if self.upload_task.get_upload_status():
+            time.sleep(1)
             self.process_window.close()
         else:
             self.process_window.display_upload_error()

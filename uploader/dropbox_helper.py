@@ -16,8 +16,6 @@ class DropboxHelper:
         self.auth_flow = None
         self.auth_result = None
 
-        self.upload_path = '/SEASON 2025-26/8. Player Pictures/99. Test/'
-
         self._get_dropbox_credentials()
         if self.APP_KEY is not None and self.APP_SECRET is not None:
             self.auth_flow = DropboxOAuth2FlowNoRedirect(self.APP_KEY,
@@ -39,7 +37,7 @@ class DropboxHelper:
             self.auth_result = None
             return False
 
-    def upload_file(self, file):
+    def upload_file(self, file, folder):
 
         upload_result = {}
 
@@ -54,8 +52,11 @@ class DropboxHelper:
 
             with open(file, 'rb') as f:
                 try:
-                    dbx.files_upload(f.read(), self.upload_path + file.name, mode=WriteMode('overwrite'))
-                    upload_result['message'] = '{} uploaded'.format(file.name)
+                    upload_path = '{}/{}'.format(Misc.DropboxUploadPath.value, folder, file.name)
+                    upload_path_with_file_name = '{}/{}'.format(upload_path, file.name)
+
+                    dbx.files_upload(f.read(), upload_path_with_file_name, mode=WriteMode('overwrite'))
+                    upload_result['message'] = '{} uploaded to {}'.format(file.name, upload_path)
                     upload_result['status'] = True
                 except ApiError as err:
                     upload_result['message'] = str(err)

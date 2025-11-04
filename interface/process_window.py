@@ -1,5 +1,4 @@
 from misc import Misc
-from PyQt6 import QtCore
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QProgressBar, QLineEdit, QTextEdit
 import pyperclip
@@ -24,9 +23,8 @@ class ProcessWindow(QWidget):
         self.dropbox_url = dropbox_helper.get_auth_url()
 
         if self.dropbox_url is not None:
-            #auth_label = QLabel("Visit {} to get auth code.".format(self.dropbox_url))
-            #auth_label.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
-            #self.layout.addWidget(auth_label)
+            path_label = QLabel("Files will uploaded to '{}' on Dropbox.".format(Misc.DropboxUploadPath.value))
+            self.layout.addWidget(path_label)
 
             copy_button = QPushButton("Click to copy URL to clipboard, then paste into browser to get auth code.")
             copy_button.clicked.connect(self._copy_button_pushed)
