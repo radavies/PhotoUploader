@@ -16,6 +16,11 @@ QLabel#headingLbl {
  font-size: 25px;
 }
 
+QLabel#errorLbl {
+    color: red;
+}
+
 QProgressBar::Chunk{
     background-color: green;
 }
+

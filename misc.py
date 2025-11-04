@@ -5,6 +5,7 @@ class Misc(Enum):
     IconFileName = "camera.png"
     CSSFileName = "app.css"
     DataFolderPath = "data"
+    DropboxCredsFileName = "dropbox_creds.json"
 
 
     #RawDataFolderPath = "raw_data"

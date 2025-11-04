@@ -11,6 +11,7 @@ from PyQt6.QtGui import QIcon
 from interface.start_window import StartWindow
 from interface.process_window import ProcessWindow
 from uploader.upload_task import UploadTask
+from uploader.dropbox_helper import DropboxHelper
 
 class PhotoUploader:
 
@@ -20,6 +21,8 @@ class PhotoUploader:
         self.process_window = None
         self.upload_thread = None
         self.upload_task = None
+
+        self.dropbox_helper = DropboxHelper()
 
     def start_app(self):
         app = QApplication(sys.argv)
@@ -46,7 +49,7 @@ class PhotoUploader:
             if file.suffix.lower() == ".jpg" or file.suffix.lower() == ".jpeg":
                 self.read_metadata(file)
 
-        self.process_window = ProcessWindow(self.uploads, self.do_upload)
+        self.process_window = ProcessWindow(self.uploads, self.do_upload, self.dropbox_helper)
         self.process_window.show()
 
     def read_metadata(self, file):
@@ -60,11 +63,11 @@ class PhotoUploader:
             else:
                 self.uploads[file] = [person]
 
-    def do_upload(self):
+    def do_upload(self, auth_code):
 
         self.upload_thread = QtCore.QThread()
 
-        self.upload_task = UploadTask(self.uploads)
+        self.upload_task = UploadTask(self.uploads, self.dropbox_helper, auth_code, self.update_upload_message)
         self.upload_task.moveToThread(self.upload_thread)
 
         self.upload_thread.started.connect(self.upload_task.run)
@@ -78,5 +81,11 @@ class PhotoUploader:
     def update_progress(self):
         self.process_window.update_progress()
 
+    def update_upload_message(self, message):
+        self.process_window.update_upload_message(message)
+
     def after_upload(self):
-        self.process_window.close()
+        if self.upload_task.get_upload_status():
+            self.process_window.close()
+        else:
+            self.process_window.display_upload_error()
