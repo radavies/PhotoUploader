@@ -31,11 +31,10 @@ class PhotoUploader:
 
         folder = Path(Misc.DataFolderPath.value)
         icon_file = folder / Misc.IconFileName.value
-        app.setWindowIcon(QIcon(str(icon_file)))
+        app.setWindowIcon(QIcon(str(pathlib.Path(icon_file).absolute())))
 
         css_file = folder / Misc.CSSFileName.value
-        app.setStyleSheet(open(css_file).read())
-
+        app.setStyleSheet(open(pathlib.Path(css_file).absolute()).read())
         self.app_window = StartWindow(self.process_folder_event)
         self.app_window.show()
 
