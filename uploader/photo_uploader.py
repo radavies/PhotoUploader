@@ -16,24 +16,26 @@ from uploader.dropbox_helper import DropboxHelper
 
 class PhotoUploader:
 
-    def __init__(self):
+    def __init__(self, application_path):
         self.uploads = {}
         self.app_window = None
         self.process_window = None
         self.upload_thread = None
         self.upload_task = None
+        self.data_folder_path = pathlib.Path('{}/{}'.format(application_path, Misc.DataFolderPath.value)).absolute()
 
-        self.dropbox_helper = DropboxHelper()
+        self.dropbox_helper = DropboxHelper(self.data_folder_path)
+
 
     def start_app(self):
         app = QApplication(sys.argv)
         app.setApplicationName(Misc.ProgName.value)
 
-        folder = Path(Misc.DataFolderPath.value)
-        icon_file = folder / Misc.IconFileName.value
+        icon_file = self.data_folder_path / Misc.IconFileName.value
         app.setWindowIcon(QIcon(str(pathlib.Path(icon_file).absolute())))
 
-        css_file = folder / Misc.CSSFileName.value
+        css_file = self.data_folder_path / Misc.CSSFileName.value
+
         app.setStyleSheet(open(pathlib.Path(css_file).absolute()).read())
         self.app_window = StartWindow(self.process_folder_event)
         self.app_window.show()
@@ -86,7 +88,7 @@ class PhotoUploader:
 
     def after_upload(self):
         if self.upload_task.get_upload_status():
-            time.sleep(1)
+            time.sleep(5)
             self.process_window.close()
         else:
             self.process_window.display_upload_error()

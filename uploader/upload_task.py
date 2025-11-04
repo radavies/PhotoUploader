@@ -16,7 +16,6 @@ class UploadTask(QObject):
 
     def run(self):
 
-
         auth_success = self.dropbox_helper.authorize(self.auth_code)
 
         if auth_success:

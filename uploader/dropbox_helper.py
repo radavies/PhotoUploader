@@ -10,11 +10,12 @@ from dropbox.exceptions import ApiError
 
 class DropboxHelper:
 
-    def __init__(self):
+    def __init__(self, data_folder_path):
         self.APP_KEY = None
         self.APP_SECRET = None
         self.auth_flow = None
         self.auth_result = None
+        self.data_folder_path = data_folder_path
 
         self._get_dropbox_credentials()
         if self.APP_KEY is not None and self.APP_SECRET is not None:
@@ -65,8 +66,7 @@ class DropboxHelper:
         return upload_result
 
     def _get_dropbox_credentials(self):
-        folder = Path(Misc.DataFolderPath.value)
-        cred_file = folder / Misc.DropboxCredsFileName.value
+        cred_file = self.data_folder_path / Misc.DropboxCredsFileName.value
 
         try:
             with open(cred_file) as json_file:

@@ -6,3 +6,5 @@
 4. Click the "Go" button
 5. The app will upload each image into the folders of all the people listed in it's IPTC headline
 6. Updates / error messages are displayed as the uploads happen
+
+Note to self, command to build dist:  pyinstaller main.py --add-data "data:data" --name "Photo Uploader" -F
