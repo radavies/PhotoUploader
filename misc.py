@@ -6,4 +6,4 @@ class Misc(Enum):
     CSSFileName = "app.css"
     DataFolderPath = "data"
     DropboxCredsFileName = "dropbox_creds.json"
-    DropboxUploadPath = '/SEASON 2025-26/8. Player Pictures'
+    DropboxUploadPath = '/SEASON 2025-26/8. Player Pictures/test'
