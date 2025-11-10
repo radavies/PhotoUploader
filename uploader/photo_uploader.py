@@ -1,7 +1,6 @@
 import pathlib
 import sys
 import time
-from pathlib import Path
 
 from PyQt6 import QtCore
 
@@ -69,7 +68,7 @@ class PhotoUploader:
 
         self.upload_thread = QtCore.QThread()
 
-        self.upload_task = UploadTask(self.uploads, self.dropbox_helper, auth_code, self.update_upload_message)
+        self.upload_task = UploadTask(self.uploads, self.dropbox_helper, auth_code)
         self.upload_task.moveToThread(self.upload_thread)
 
         self.upload_thread.started.connect(self.upload_task.run)
@@ -82,9 +81,6 @@ class PhotoUploader:
 
     def update_progress(self):
         self.process_window.update_progress()
-
-    def update_upload_message(self, message):
-        self.process_window.update_upload_message(message)
 
     def after_upload(self):
         if self.upload_task.get_upload_status():

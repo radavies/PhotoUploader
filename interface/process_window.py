@@ -46,17 +46,13 @@ class ProcessWindow(QWidget):
             self.progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.layout.addWidget(self.progress_bar)
 
-            self.upload_messages = QTextEdit()
-            self.upload_messages.setEnabled(False)
-            self.layout.addWidget(self.upload_messages)
-
-
         else:
             issue_label = QLabel("Dropbox Creds Issue.", objectName="errorLbl")
             self.layout.addWidget(issue_label)
 
 
-    def _get_uploads_required(self, uploads):
+    @staticmethod
+    def _get_uploads_required(uploads):
         count = 0
         for file in uploads.keys():
             for person in uploads[file]:
@@ -75,9 +71,6 @@ class ProcessWindow(QWidget):
 
     def update_progress(self):
         self.progress_bar.setValue(self.progress_bar.value() + 1)
-
-    def update_upload_message(self, message):
-        self.upload_messages.append(message)
 
     def display_upload_error(self):
         issue_label = QLabel("Dropbox Upload Error.", objectName="errorLbl")

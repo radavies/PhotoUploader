@@ -38,34 +38,7 @@ class DropboxHelper:
             self.auth_result = None
             return False
 
-    def upload_file(self, file, folder):
-
-        upload_result = {}
-
-        with dropbox.Dropbox(oauth2_access_token=self.auth_result.access_token,
-                             oauth2_access_token_expiration=self.auth_result.expires_at,
-                             oauth2_refresh_token=self.auth_result.refresh_token,
-                             app_key=self.APP_KEY,
-                             app_secret=self.APP_SECRET) as dbx:
-
-            root_namespace_id = dbx.users_get_current_account().root_info.root_namespace_id
-            dbx = dbx.with_path_root(dropbox.common.PathRoot.root(root_namespace_id))
-
-            with open(file, 'rb') as f:
-                try:
-                    upload_path = '{}/{}'.format(Misc.DropboxUploadPath.value, folder, file.name)
-                    upload_path_with_file_name = '{}/{}'.format(upload_path, file.name)
-
-                    dbx.files_upload(f.read(), upload_path_with_file_name, mode=WriteMode('overwrite'))
-                    upload_result['message'] = '{} uploaded to {}'.format(file.name, upload_path)
-                    upload_result['status'] = True
-                except ApiError as err:
-                    upload_result['message'] = str(err)
-                    upload_result['status'] = False
-
-        return upload_result
-
-    def upload_files(self, uploads, upload_message_event, upload_signal):
+    def upload_files(self, uploads, upload_signal):
 
         upload_status = True
         with dropbox.Dropbox(oauth2_access_token=self.auth_result.access_token,
@@ -77,7 +50,7 @@ class DropboxHelper:
             root_namespace_id = dbx.users_get_current_account().root_info.root_namespace_id
             dbx = dbx.with_path_root(dropbox.common.PathRoot.root(root_namespace_id))
 
-            for file in uploads.keys():
+            for file in sorted(uploads):
                 for person in uploads[file]:
 
                     upload_result = {}
@@ -93,9 +66,6 @@ class DropboxHelper:
                         except ApiError as err:
                             upload_result['message'] = str(err)
                             upload_result['status'] = False
-
-
-                    upload_message_event(upload_result['message'])
 
                     if not upload_result['status']:
                         upload_status = False
