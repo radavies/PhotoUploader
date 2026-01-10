@@ -22,8 +22,9 @@ class PhotoUploader:
         self.upload_thread = None
         self.upload_task = None
         self.data_folder_path = pathlib.Path('{}/{}'.format(application_path, Misc.DataFolderPath.value)).absolute()
+        self.log_folder_path = pathlib.Path('{}/{}'.format(application_path, Misc.LogFolderPath.value)).absolute()
 
-        self.dropbox_helper = DropboxHelper(self.data_folder_path)
+        self.dropbox_helper = DropboxHelper(self.data_folder_path, self.log_folder_path)
 
 
     def start_app(self):

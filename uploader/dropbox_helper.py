@@ -10,12 +10,13 @@ from dropbox.exceptions import ApiError
 
 class DropboxHelper:
 
-    def __init__(self, data_folder_path):
+    def __init__(self, data_folder_path, log_folder_path):
         self.APP_KEY = None
         self.APP_SECRET = None
         self.auth_flow = None
         self.auth_result = None
         self.data_folder_path = data_folder_path
+        self.log_folder_path = log_folder_path
 
         self._get_dropbox_credentials()
         if self.APP_KEY is not None and self.APP_SECRET is not None:
@@ -47,6 +48,7 @@ class DropboxHelper:
                              app_key=self.APP_KEY,
                              app_secret=self.APP_SECRET) as dbx:
 
+
             root_namespace_id = dbx.users_get_current_account().root_info.root_namespace_id
             dbx = dbx.with_path_root(dropbox.common.PathRoot.root(root_namespace_id))
 
@@ -55,20 +57,26 @@ class DropboxHelper:
 
                     upload_result = {}
 
-                    with open(file, 'rb') as f:
-                        try:
-                            upload_path = '{}/{}'.format(Misc.DropboxUploadPath.value, person, file.name)
-                            upload_path_with_file_name = '{}/{}'.format(upload_path, file.name)
+                    with open(self.log_folder_path / Misc.LogFileName.value, 'a') as log_file:
+                        with open(file, 'rb') as f:
+                            try:
+                                upload_path = '{}/{}'.format(Misc.DropboxUploadPath.value, person, file.name)
+                                upload_path_with_file_name = '{}/{}'.format(upload_path, file.name)
 
-                            dbx.files_upload(f.read(), upload_path_with_file_name, mode=WriteMode('overwrite'))
-                            upload_result['message'] = '{} uploaded to {}'.format(file.name, upload_path)
-                            upload_result['status'] = True
-                        except ApiError as err:
-                            upload_result['message'] = str(err)
-                            upload_result['status'] = False
+                                dbx.files_upload(f.read(), upload_path_with_file_name, mode=WriteMode('overwrite'))
+                                upload_message = '{} uploaded to {}'.format(file.name, upload_path)
 
-                    if not upload_result['status']:
-                        upload_status = False
+                                log_file.write('{}{}'.format(upload_message, '\n'))
+                                upload_result['message'] = upload_message
+
+                                upload_result['status'] = True
+                            except ApiError as err:
+                                upload_result['message'] = str(err)
+                                log_file.write('{}{}'.format(str(err), '\n'))
+                                upload_result['status'] = False
+
+                        if not upload_result['status']:
+                            upload_status = False
 
                     upload_signal.emit()
 
