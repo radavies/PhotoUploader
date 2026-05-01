@@ -6,6 +6,9 @@ from PyQt6 import QtCore
 
 from misc import Misc
 from iptcinfo3 import IPTCInfo
+
+from libxmp import XMPFiles, consts
+
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QIcon
 from interface.start_window import StartWindow
@@ -54,16 +57,20 @@ class PhotoUploader:
         self.process_window = ProcessWindow(self.uploads, self.do_upload, self.dropbox_helper)
         self.process_window.show()
 
-    def read_metadata(self, file):
-        info = IPTCInfo(file)
 
-        people = info['headline'].decode("utf-8").split(',')
+    def read_metadata(self, file):
+        xmp_file = XMPFiles(file_path=str(file.absolute()))
+        xmp_data = xmp_file.get_xmp()
+        headline = xmp_data.get_property(consts.XMP_NS_Photoshop, 'Headline')
+
+        people = headline.split(',')
 
         for person in people:
             if file in self.uploads.keys():
                 self.uploads[file].append(person.strip())
             else:
                 self.uploads[file] = [person]
+
 
     def do_upload(self, auth_code):
 
