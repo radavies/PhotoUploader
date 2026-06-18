@@ -8,4 +8,4 @@ class Misc(Enum):
     LogFolderPath = "logs"
     LogFileName = "log.txt"
     DropboxCredsFileName = "dropbox_creds.json"
-    DropboxUploadPath = '/SEASON 2025-26/8. Player Pictures'
+    DropboxUploadPath = '/SEASON 2026-27/3. Player Pictures'
